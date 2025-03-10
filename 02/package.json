@@ -1,0 +1,17 @@
+{
+  "name": "exemplo-pacotes",
+  "version": "1.0.0",
+  "description": "exemplo de pacote criado manualmente com npm init",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "exemplo",
+    "npm",
+    "api",
+    "scripts"
+  ],
+  "author": "Jackson Duarte da Penha",
+  "license": "ISC"
+}

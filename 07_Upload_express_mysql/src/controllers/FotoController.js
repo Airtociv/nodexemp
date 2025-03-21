@@ -1,4 +1,4 @@
-import { atualizarFoto, criandoFoto } from "../models/FotoModel.js";
+import { apagarFoto, atualizarFoto, criandoFoto, mostaUmaFoto } from "../models/FotoModel.js";
 
 import path from 'path';
 import url from 'url';
@@ -32,7 +32,7 @@ const caminho = `${Date.now()}${extensao}`
     }
 }
 
-export const updateFoto = async(req,res) =>{
+export  const updateFoto = async(req,res) =>{
     console.log('FotoController::updateFoto');
     const {id_foto} = req.params;
     const {alternativo} = req.body;
@@ -44,6 +44,32 @@ export const updateFoto = async(req,res) =>{
         console.error(error);
         return res.status(500).json({mensagem:"erro ao atualizar dados"})
         
+    }
+    
+}
+export const deleteFoto = async(req,res) =>{
+    console.log('FotoController :: deleteFoto');
+    const {id_foto} = req.params;
+
+    try {
+        const [status,resposta] = await apagarFoto(id_foto);
+        return res.status(status).json(resposta);
+        
+    } catch (error) {
+        return res.status(500).json({mensagem:"erro ao deletar fotos"})
+    }
+}
+
+export const showOneFoto = async(req,res) =>{
+    console.log('FotoController :: showOneFoto');
+    const {id_foto} = req.params;
+
+    try {
+        const [status,resposta] = await mostaUmaFoto(id_foto)
+        return res.status(status).json(resposta);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({mensagem:"erro ao mostrar uma foto"})
     }
     
 }

@@ -2,6 +2,7 @@ import express from 'express';
 import fileUpLoad from 'express-fileupload';
 import path from 'path';
 import url from 'url';
+import cors from 'cors';
 
 import { createFoto, deleteFoto, showOneFoto, updateFoto } from './controllers/FotoController.js';
 import { readFoto } from './models/FotoModel.js';
@@ -16,6 +17,8 @@ const __dirname = path.dirname(__filename);
 app.use(express.json());
 
 app.use(fileUpLoad())
+
+app.use(cors())
 
 app.use('/public/img',express.static(path.join(__dirname,'..','public','img')))
 

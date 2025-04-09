@@ -2,6 +2,7 @@ import { apagarFoto, atualizarFoto, criandoFoto, mostaUmaFoto } from "../models/
 
 import path from 'path';
 import url from 'url';
+import { promises as fs } from "fs";
 const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename);
 
@@ -19,6 +20,12 @@ if(!alternativo || !foto){
 
 const nomeFoto = foto.name;
 const extensao = path.extname(nomeFoto).toLocaleLowerCase();
+
+const extensoesPermitidas = ['.jpg','.jpeg','.png'];
+if(!extensoesPermitidas.includes(extensao)){
+    return res.status(400).json({mensagem:"extensão invalida"})
+}
+
 const caminho = `${Date.now()}${extensao}`
 
     try {
@@ -51,7 +58,15 @@ export const deleteFoto = async(req,res) =>{
     console.log('FotoController :: deleteFoto');
     const {id_foto} = req.params;
 
-    try {
+    try {  
+        const [statusFoto,respostaFoto] = await showOneFoto(req,res);
+        if (statusFoto === 404){
+            return res.status(statusFoto).json(respostaFoto)
+        }
+
+            const caminhoImagem = path.join(__dirname,'..','..','public','img',respostaFoto.caminho);
+            await fs.unlink(caminhoImagem);
+
         const [status,resposta] = await apagarFoto(id_foto);
         return res.status(status).json(resposta);
         
@@ -60,13 +75,20 @@ export const deleteFoto = async(req,res) =>{
     }
 }
 
+
 export const showOneFoto = async(req,res) =>{
+    console.log('FotoController :: showOneFoto');
+    const [status,resposta] = await mostrarCaminho(req,res);
+    return [status,resposta];
+}
+
+export const mostrarCaminho = async(req,res) =>{
     console.log('FotoController :: showOneFoto');
     const {id_foto} = req.params;
 
     try {
         const [status,resposta] = await mostaUmaFoto(id_foto)
-        return res.status(status).json(resposta);
+        return [status,resposta];
     } catch (error) {
         console.error(error);
         return res.status(500).json({mensagem:"erro ao mostrar uma foto"})
